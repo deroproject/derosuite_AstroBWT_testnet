@@ -409,10 +409,7 @@ func (chain *Blockchain) Get_Median_Block_Size() uint64 { // get current cached 
 }
 
 func (chain *Blockchain) Get_Network_HashRate() uint64 {
-	if chain.Get_Difficulty() <= config.BLOCK_TIME {
-		return chain.Get_Difficulty()
-	}
-	return chain.Get_Difficulty() / config.BLOCK_TIME
+	return chain.Get_Difficulty() / chain.Get_Current_BlockTime()
 }
 
 // confirm whether the block exist in the data

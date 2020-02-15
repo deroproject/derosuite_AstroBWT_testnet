@@ -17,6 +17,7 @@
 package blockchain
 
 import "github.com/deroproject/derosuite/block"
+import "github.com/deroproject/derosuite/config"
 import "github.com/deroproject/derosuite/storage"
 import "github.com/deroproject/derosuite/globals"
 
@@ -52,8 +53,9 @@ var mainnet_hard_forks = []Hard_fork{
 
 // current testnet_hard_forks
 var testnet_hard_forks = []Hard_fork{
-	{1, 0, 0, 0, 0, true},    // version 1 hard fork where genesis block landed
-	{2, 1984, 0, 0, 0, true}, // version 2 hard fork where we started , it's mandatory
+	//{1, 0, 0, 0, 0, true},    // version 1 hard fork where genesis block landed
+	{3, 0, 0, 0, 0, true}, // version 3 hard fork where we started , it's mandatory
+  	{4, 3, 0, 0, 0, true}, // version 4 hard fork where we change mining algorithm it's mandatory
 }
 
 // current simulation_hard_forks
@@ -204,6 +206,15 @@ func (chain *Blockchain) Get_HF_info() (state int, enabled bool, earliest_height
 func (chain *Blockchain) Get_Current_Version() int64 { // it is last version voted or mandatory update
 	return chain.Get_Current_Version_at_Height(chain.Get_Height())
 }
+
+func (chain *Blockchain) Get_Current_BlockTime() uint64 { // it is last version voted or mandatory update
+   block_time:= config.BLOCK_TIME
+   if chain.Get_Current_Version() >= 4 {
+        block_time= config.BLOCK_TIME_hf4
+    }
+	return block_time
+}
+
 
 func (chain *Blockchain) Get_Current_Version_at_Height(height int64) int64 {
 	for i := len(current_hard_forks) - 1; i >= 0; i-- {
