@@ -218,18 +218,17 @@ func (chain *Blockchain) Create_new_block_template_mining(top_hash crypto.Hash, 
 	rlog.Debugf("Mining block will give reward to %s", miner_address)
     cache_block_mutex.Lock()
     defer cache_block_mutex.Unlock()
-    if bl.Timestamp < (1 + uint64(uint64(time.Now().UTC().Unix()))){
-	_, bl = chain.Create_new_miner_block(miner_address)
+    if cache_block.Timestamp < (uint64(uint64(time.Now().UTC().Unix()))) ||  (cache_block.Timestamp > 0 && int64(cache_block.Miner_TX.Vin[0].(transaction.Txin_gen).Height) != chain.Get_Height()+1)  {
+        _, bl = chain.Create_new_miner_block(miner_address)
         cache_block = bl // setup cache for 1 sec
     }else{
        var err error
        bl = cache_block
-       	bl.Miner_TX, err = Create_Miner_TX2(int64(bl.Major_Version), int64(bl.Miner_TX.Vin[0].(transaction.Txin_gen).Height), miner_address)
+        bl.Miner_TX, err = Create_Miner_TX2(int64(bl.Major_Version), int64(bl.Miner_TX.Vin[0].(transaction.Txin_gen).Height), miner_address)
         if err != nil {
-		logger.Warnf("Error while creating miner block, err %s", err)
-	}
+                logger.Warnf("Error while creating miner block, err %s", err)
+        }
     }
-
 	blockhashing_blob = fmt.Sprintf("%x", bl.GetBlockWork())
 
 	// block template is all the parts of the block in dismantled form

@@ -471,7 +471,7 @@ func getwork() {
 			globals.Logger.Errorf("Error receiving block template  Failed err %s", err)
 		}
 
-		time.Sleep(time.Second)
+		time.Sleep(300 * time.Millisecond)
 	}
 
 }

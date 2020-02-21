@@ -17,7 +17,16 @@ func threadaffinity() {
 		return
 	}
 	cpuset.Zero()
-	cpuset.Set(int(lock_on_cpu))
+	cpuset.Set(int(avoidHT(int(lock_on_cpu))))
 
 	unix.SchedSetaffinity(0, &cpuset)
+}
+
+func  avoidHT( i int ) int {
+        count := runtime.GOMAXPROCS(0)
+        if i < count/2 {
+         return i*2
+        }else{
+         return (i-count/2)*2+1
+        }
 }
